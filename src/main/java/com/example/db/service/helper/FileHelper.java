@@ -23,14 +23,13 @@ public class FileHelper {
     @SneakyThrows
     public static File getFile(String fileName) {
         ClassLoader classLoader = FileHelper.class.getClassLoader();
-        File file = new File(classLoader.getResource(".").getFile() + "/db/" + fileName);
-        return file;
+        return new File(classLoader.getResource(".").getFile() + "/db/" + fileName);
     }
 
     @SneakyThrows
     public static void appendLineToFile(File file, String line) {
         PrintWriter printWriter = new PrintWriter(new FileOutputStream(file, true));
-        printWriter.append(line + "\r\n");
+        printWriter.append(line).append("\r\n");
         printWriter.close();
     }
 
@@ -47,7 +46,7 @@ public class FileHelper {
     public static List<FoundLine> getTableContent(String fileName) {
         List<FoundLine> result = new ArrayList<>();
         List<String> fileContent = getSchemaContent(fileName);
-        Integer fileLine = 0;
+        int fileLine = 0;
         for (var c : fileContent) {
             FoundLine foundLine = new FoundLine();
             foundLine.setLineNumber(fileLine++);
@@ -64,7 +63,7 @@ public class FileHelper {
         ClassLoader classLoader = FileHelper.class.getClassLoader();
         try (BufferedReader br = new BufferedReader(new FileReader(classLoader.getResource(".").getFile() + "/db/" + fileName))) {
             String line;
-            Integer lineNumber =0;
+            int lineNumber =0;
             while ((line = br.readLine()) != null) {
                 lineResult = searchInLine(line, delimiter, columnIndex, searchValue, operator);
                 if (lineResult != null) {
@@ -81,69 +80,55 @@ public class FileHelper {
         return result;
     }
 
-    // for OR cycle
-    @SneakyThrows
-    public static List<String> getLinesByExpression(List<String> lines, String delimiter, Integer columnIndex, String searchValue, String operator) {
-        List<String> result = new ArrayList<>();
-        String lineResult;
-        for (var line: lines) {
-            lineResult = searchInLine(line, delimiter, columnIndex, searchValue, operator);
-            if (lineResult != null) {
-                result.add(lineResult);
-            }
-        }
-        return result;
-    }
-
     public static String searchInLine(String line, String delimiter, Integer columnIndex, String searchValue, String operator) {
         String token = line.split(delimiter)[columnIndex];
         String result = null;
         switch (operator) {
-            case "=":
+            case "=" -> {
                 if (token.equals(searchValue)) {
                     result = line;
                 }
-                break;
-            case "!=":
+            }
+            case "!=" -> {
                 if (!token.equals(searchValue)) {
                     result = line;
                 }
-                break;
-            case "likeLeft":
+            }
+            case "likeLeft" -> {
                 if (token.endsWith(searchValue)) {
                     result = line;
                 }
-                break;
-            case "likeRight":
+            }
+            case "likeRight" -> {
                 if (token.startsWith(searchValue)) {
                     result = line;
                 }
-                break;
-            case "likeFull":
+            }
+            case "likeFull" -> {
                 if (token.contains(searchValue)) {
                     result = line;
                 }
-                break;
-            case ">":
+            }
+            case ">" -> {
                 if (TypeHelper.toInt(token) > TypeHelper.toInt(searchValue)) {
                     result = line;
                 }
-                break;
-            case "<":
+            }
+            case "<" -> {
                 if (TypeHelper.toInt(token) < TypeHelper.toInt(searchValue)) {
                     result = line;
                 }
-                break;
-            case ">=":
+            }
+            case ">=" -> {
                 if (TypeHelper.toInt(token) >= TypeHelper.toInt(searchValue)) {
                     result = line;
                 }
-                break;
-            case "<=":
+            }
+            case "<=" -> {
                 if (TypeHelper.toInt(token) <= TypeHelper.toInt(searchValue)) {
                     result = line;
                 }
-                break;
+            }
         }
         return result;
     }

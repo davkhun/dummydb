@@ -23,7 +23,7 @@ import static com.example.db.service.helper.FileHelper.getFile;
 
 public class CreateOperation {
 
-    private static Logger log = LoggerFactory.getLogger(CreateOperation.class);
+    private static final Logger log = LoggerFactory.getLogger(CreateOperation.class);
     public static void doOperation(CreateTableModel model) throws IOException {
         ClassLoader classLoader = CreateOperation.class.getClassLoader();
         File file = new File(classLoader.getResource(".").getFile() + "/db/" + model.getName() + ".txt");

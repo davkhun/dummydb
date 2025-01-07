@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DbHelper {
-    private static Logger log = LoggerFactory.getLogger(CreateOperation.class);
+    private static final Logger log = LoggerFactory.getLogger(CreateOperation.class);
     public static boolean isTableExists(String tableName) {
         return FileHelper.isFileExists(tableName + ".txt");
     }
@@ -28,7 +28,7 @@ public class DbHelper {
         List<String> lines = FileHelper.getSchemaContent(tableName + "_schema.txt");
         schema.setCurrentId(Integer.parseInt(lines.get(0)));
         String plainColumns = lines.get(1);
-        Integer position = 1; // because at position 0 we have an _id
+        int position = 1; // because at position 0 we have an _id
         for (String column: plainColumns.split(",")) {
             TableColumn col = new TableColumn();
             String[] tokenColumn = column.split("\\|");
@@ -51,7 +51,7 @@ public class DbHelper {
     @SneakyThrows
     public static List<FoundLine> selectFromTableByOneExpression(String tableName, String columnName, String searchValue, String operator) {
         SchemaModel schema = getSchema(tableName);
-        Integer columnIndex = -1;
+        int columnIndex = -1;
         // simplification search index. If search by _id (inner PK), set column index to zero, otherwise, set by i + 1
         if (columnName.equals("_id")) {
             columnIndex = 0;
@@ -73,8 +73,7 @@ public class DbHelper {
     @SneakyThrows
     public static void filterFromTableByOneExpression(String tableName, List<FoundLine> currentResult, String columnName, String searchValue, String operator) {
         SchemaModel schema = getSchema(tableName);
-        Integer columnIndex = -1;
-        List<String> result = new ArrayList<>();
+        int columnIndex = -1;
         // simplification search index. If search by _id (inner PK), set column index to zero, otherwise, set by i + 1
         if (columnName.equals("_id")) {
             columnIndex = 0;
@@ -88,10 +87,10 @@ public class DbHelper {
             }
         }
         List<FoundLine> tmpResult = new ArrayList<>();
-        for (int i = 0; i < currentResult.size(); i ++) {
-            String res = FileHelper.searchInLine(currentResult.get(i).getContent(), ",", columnIndex, searchValue, operator);
+        for (FoundLine foundLine : currentResult) {
+            String res = FileHelper.searchInLine(foundLine.getContent(), ",", columnIndex, searchValue, operator);
             if (res != null) {
-                tmpResult.add(currentResult.get(i));
+                tmpResult.add(foundLine);
             }
         }
         currentResult.clear();
@@ -170,48 +169,48 @@ public class DbHelper {
 
     public static String listToTable(String tableName, List<FoundLine> result, Long timeElapsed, List<String> columns) {
         List<String> content = result.stream().map(FoundLine::getContent).toList();
-        String res = "";
+        StringBuilder res = new StringBuilder();
         SchemaModel schema = getSchema(tableName);
-        res += "Table: " + tableName + "\n";
-        res += "---------------------------\n";
+        res.append("Table: ").append(tableName).append("\n");
+        res.append("---------------------------\n");
         // draw all columns
         if (columns.size() == 0) {
-            res += "_id\t";
+            res.append("_id\t");
             for (var c: schema.getColumns()) {
-                res += c.getName().toUpperCase() + "\t";
+                res.append(c.getName().toUpperCase()).append("\t");
             }
-            res += "\n";
-            res += "---------------------------\n";
+            res.append("\n");
+            res.append("---------------------------\n");
             // draw rows
             for (var r: content) {
-                res += r.replace(",","\t") + "\n";
+                res.append(r.replace(",", "\t")).append("\n");
             }
         }
         else {
             // draw specific columns
             for (var c: columns) {
-                res += c + "\t";
+                res.append(c).append("\t");
             }
-            res += "\n";
-            res += "---------------------------\n";
+            res.append("\n");
+            res.append("---------------------------\n");
             // draw rows
             for (var r: content) {
                 String[] tokens = r.split(",");
                 for (var c: columns) {
                     if (c.equals("_id")) {
-                        res += tokens[0] + "\t";
+                        res.append(tokens[0]).append("\t");
                     }
                     else {
-                        Long colIndex = schema.getColumns().stream().takeWhile(x->x.getName().equals(c)).count();
-                        res += tokens[Math.toIntExact(colIndex)] + "\t";
+                        long colIndex = schema.getColumns().stream().takeWhile(x->x.getName().equals(c)).count();
+                        res.append(tokens[Math.toIntExact(colIndex)]).append("\t");
                     }
                 }
-                res += "\n";
+                res.append("\n");
             }
         }
-        res += "---------------------------\n";
-        res += "Time elapsed: " + timeElapsed;
-        return res;
+        res.append("---------------------------\n");
+        res.append("Time elapsed: ").append(timeElapsed);
+        return res.toString();
     }
 
 

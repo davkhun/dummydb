@@ -4,21 +4,18 @@ import com.example.db.model.FoundLine;
 import com.example.db.model.TableColumn;
 import com.example.db.service.helper.DbHelper;
 import com.example.db.service.helper.LocalExpressionVisitorAdapter;
-import java.util.ArrayList;
-import java.util.List;
-import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.select.PlainSelect;
-import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.TablesNamesFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UpdateOperation {
-  private static Logger log = LoggerFactory.getLogger(CreateOperation.class);
+  private static final Logger log = LoggerFactory.getLogger(CreateOperation.class);
 
   // TODO: for all schedule operation need to use file logging for errors
   public static void doOperation(String query) throws Exception {

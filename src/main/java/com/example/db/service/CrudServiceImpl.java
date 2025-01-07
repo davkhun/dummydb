@@ -20,7 +20,7 @@ import static com.example.db.service.helper.FileHelper.getFile;
 @Service
 public class CrudServiceImpl implements CrudService {
 
-    private static Logger log = LoggerFactory.getLogger(CrudService.class);
+    private static final Logger log = LoggerFactory.getLogger(CrudService.class);
     @Autowired
     ResourceLoader resourceLoader;
 
@@ -56,7 +56,6 @@ public class CrudServiceImpl implements CrudService {
             String lastPart = query.substring(query.lastIndexOf("values")+6);
             Pattern insertPattern = Pattern.compile("(?=\\()(?:(?=.*?\\((?!.*?\\1)(.*\\)(?!.*\\2).*))(?=.*?\\)(?!.*?\\2)(.*)).)+?.*?(?=\\1)[^(]*(?=\\2$)");
             Matcher insertMatcher = insertPattern.matcher(lastPart);
-            Integer i = 0;
             // TODO: too slow on large inserts (over 1k)
             while (insertMatcher.find()) {
                 queries.add(firstPart + " " + insertMatcher.group());
@@ -69,7 +68,7 @@ public class CrudServiceImpl implements CrudService {
         File journalFile = getFile("journal.txt");
         PrintWriter journalPrintWriter = new PrintWriter(new FileOutputStream(journalFile, true));
         for (String line: queries) {
-            journalPrintWriter.append(line + "\r\n");
+            journalPrintWriter.append(line).append("\r\n");
         }
         journalPrintWriter.close();
     }

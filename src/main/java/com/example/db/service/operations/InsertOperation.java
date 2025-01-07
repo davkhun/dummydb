@@ -19,7 +19,7 @@ import java.util.List;
 import static com.example.db.service.helper.DbHelper.getSchema;
 
 public class InsertOperation {
-    private static Logger log = LoggerFactory.getLogger(CreateOperation.class);
+    private static final Logger log = LoggerFactory.getLogger(CreateOperation.class);
 
     public static void doOperation(InsertTableModel model) {
         // map model to string

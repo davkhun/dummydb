@@ -3,16 +3,7 @@ package com.example.db.service.operations;
 import com.example.db.model.FoundLine;
 import com.example.db.service.helper.DbHelper;
 import com.example.db.service.helper.LocalExpressionVisitorAdapter;
-import com.example.db.service.helper.TypeHelper;
-import java.util.ArrayList;
-import java.util.List;
-import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.ExpressionVisitorAdapter;
-import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
-import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
-import net.sf.jsqlparser.expression.operators.relational.ComparisonOperator;
-import net.sf.jsqlparser.expression.operators.relational.LikeExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.PlainSelect;
@@ -22,8 +13,11 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SelectOperation {
-  private static Logger log = LoggerFactory.getLogger(CreateOperation.class);
+  private static final Logger log = LoggerFactory.getLogger(CreateOperation.class);
 
   // TODO: its just a simple select for 1 table, to use multiple tables in select need to rework getting schemas for all tables and validating and for only one expression
   public static String doOperation(String query) throws Exception {

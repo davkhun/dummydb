@@ -2,20 +2,13 @@ package com.example.db.service;
 
 import com.example.db.model.CreateTableModel;
 import com.example.db.model.InsertTableModel;
-import com.example.db.service.helper.DbHelper;
-import com.example.db.service.operations.CreateOperation;
-import com.example.db.service.operations.DeleteOperation;
-import com.example.db.service.operations.DropOperation;
-import com.example.db.service.operations.InsertOperation;
-import com.example.db.service.operations.TruncateOperation;
-import com.example.db.service.operations.UpdateOperation;
+import com.example.db.service.operations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -29,9 +22,9 @@ public class CrudSchedule {
 
     private static final Logger log = LoggerFactory.getLogger(CrudSchedule.class);
 
-    private File journal = getFile("journal.txt");
+    private final File journal = getFile("journal.txt");
 
-    private File backup = getFile("backup_journal.txt");
+    private final File backup = getFile("backup_journal.txt");
 
     @Scheduled(fixedDelay = 1000, initialDelay = 1000)
     public void processJournal() throws Exception {
